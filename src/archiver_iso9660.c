@@ -377,7 +377,7 @@ static PHYSFS_sint64 iso_readfiledescriptor(ISO9660Handle *handle,
     rc = iso_readimage(handle, where + 1, &descriptor->extattributelen,
             descriptor->recordlen - sizeof(descriptor->recordlen));
     BAIL_IF_MACRO(rc == -1, ERRPASS, -1);
-    BAIL_IF_MACRO(rc != 1, PHYSFS_ERR_CORRUPT, -1);
+    BAIL_IF_MACRO(rc != (descriptor->recordlen - sizeof(descriptor->recordlen)), PHYSFS_ERR_CORRUPT, -1);
 
     return 0;
 } /* iso_readfiledescriptor */
