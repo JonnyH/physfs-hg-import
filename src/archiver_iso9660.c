@@ -377,7 +377,7 @@ static PHYSFS_sint64 iso_readfiledescriptor(ISO9660Handle *handle,
     rc = iso_readimage(handle, where + 1, &descriptor->extattributelen,
             descriptor->recordlen - sizeof(descriptor->recordlen));
     BAIL_IF_MACRO(rc == -1, ERRPASS, -1);
-    BAIL_IF_MACRO(rc != 1, PHYSFS_ERR_CORRUPT, -1);
+    BAIL_IF_MACRO(rc != (descriptor->recordlen - sizeof(descriptor->recordlen)), PHYSFS_ERR_CORRUPT, -1);
 
     return 0;
 } /* iso_readfiledescriptor */
@@ -553,7 +553,7 @@ static void *ISO9660_openArchive(PHYSFS_Io *io, const char *filename, int forWri
 
     /* Skip system area to magic number in Volume descriptor */
     BAIL_IF_MACRO(!io->seek(io, 32769), ERRPASS, NULL);
-    BAIL_IF_MACRO(!io->read(io, magicnumber, 5) != 5, ERRPASS, NULL);
+    BAIL_IF_MACRO(io->read(io, magicnumber, 5) != 5, ERRPASS, NULL);
     if (memcmp(magicnumber, "CD001", 6) != 0)
         BAIL_MACRO(PHYSFS_ERR_UNSUPPORTED, NULL);
 
