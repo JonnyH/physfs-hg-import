@@ -456,13 +456,13 @@ static int iso_find_dir_entry(ISO9660Handle *handle,const char *path,
             {
                 /* !!! FIXME: set PHYSFS_ERR_NOT_FOUND? */
                 /* we're at a file but have a remaining subpath -> no match */
-                return 0;
+                return 1;
             } /* else */
         } /* if */
     } /* while */
 
     /* !!! FIXME: set PHYSFS_ERR_NOT_FOUND? */
-    return 0;
+    return 1;
 } /* iso_find_dir_entry */
 
 
@@ -871,7 +871,7 @@ static int ISO9660_stat(void *opaque, const char *name, PHYSFS_Stat *stat)
     ISO9660Handle *handle = (ISO9660Handle*) opaque;
     ISO9660FileDescriptor descriptor;
     ISO9660ExtAttributeRec extattr;
-    BAIL_IF_MACRO(iso_find_dir_entry(handle, name, &descriptor), ERRPASS, -1);
+    BAIL_IF_MACRO(iso_find_dir_entry(handle, name, &descriptor), ERRPASS, 0);
 
     stat->readonly = 1;
 
