@@ -29,6 +29,10 @@
 
 #if PHYSFS_SUPPORTS_ISO9660
 
+#if !defined(__cplusplus) && !defined(_WIN32)
+#define static_assert(a,b)
+#endif
+
 #include <time.h>
 
 /* cache files smaller than this completely in memory */
@@ -84,16 +88,20 @@ typedef struct
     PHYSFS_sint8 offset;
 } ISO9660FileTimestamp;
 
+static_assert(sizeof(ISO9660FileTimestamp) == 7, "Unexpected FileTimestamp size");
+
 typedef struct
 {
-  unsigned existence:1;
-  unsigned directory:1;
-  unsigned associated_file:1;
-  unsigned record:1;
-  unsigned protection:1;
-  unsigned reserved:2;
-  unsigned multiextent:1;
+  PHYSFS_uint8 existence:1;
+  PHYSFS_uint8 directory : 1;
+  PHYSFS_uint8 associated_file : 1;
+  PHYSFS_uint8 record:1;
+  PHYSFS_uint8 protection : 1;
+  PHYSFS_uint8 reserved : 2;
+  PHYSFS_uint8 multiextent : 1;
 } ISO9660FileFlags;
+
+static_assert(sizeof(ISO9660FileFlags) == 1, "Unexpected FileFlags size");
 
 typedef struct
 {
@@ -109,6 +117,8 @@ typedef struct
     PHYSFS_uint8 len_fi;
     char unused;
 } ISO9660RootDirectoryRecord;
+
+static_assert(sizeof(ISO9660RootDirectoryRecord) == 34, "Unexpected RootDirectoryRecord struct size");
 
 /* this structure is combined for all Volume descriptor types */
 typedef struct
@@ -158,6 +168,9 @@ typedef struct
     char application_use[512];
     char unused5[653];
 } ISO9660VolumeDescriptor;
+
+static_assert(sizeof(ISO9660VolumeDescriptor) == 2048, "Volume descriptor struct unexpected size");
+
 
 typedef struct
 {
