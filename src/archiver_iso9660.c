@@ -247,6 +247,7 @@ typedef struct __ISO9660FileHandle
 static PHYSFS_sint64 iso_mktime(ISO9660FileTimestamp *timestamp)
 {
     struct tm tm;
+    memset(&tm, 0, sizeof(tm));
     tm.tm_year = timestamp->year;
     tm.tm_mon = timestamp->month - 1;
     tm.tm_mday = timestamp->day;
