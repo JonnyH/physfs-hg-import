@@ -727,7 +727,7 @@ static int iso_file_seek_foreign(ISO9660FileHandle *fhandle,
     BAIL_IF_MACRO(!fhandle->io->seek(fhandle->io, pos), ERRPASS, -1);
 
     fhandle->currpos = offset;
-    return 0;
+    return 1;
 } /* iso_file_seek_foreign */
 
 
