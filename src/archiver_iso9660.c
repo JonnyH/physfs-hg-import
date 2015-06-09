@@ -706,7 +706,9 @@ static PHYSFS_uint32 iso_file_read_foreign(ISO9660FileHandle *filehandle,
     /* check remaining bytes & max obj which can be fetched */
     const PHYSFS_sint64 bytesleft = filehandle->filesize - filehandle->currpos;
     if (bytesleft < len)
+    {
         len = bytesleft;
+    }
 
     const PHYSFS_sint64 rc = filehandle->io->read(filehandle->io, buffer, len);
     BAIL_IF_MACRO(rc == -1, ERRPASS, -1);
