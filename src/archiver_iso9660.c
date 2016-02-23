@@ -846,7 +846,6 @@ static void ISO9660_enumerateFiles(void *opaque, const char *dname,
     } /* if */
     else
     {
-        printf("pfad %s\n",dname);
         BAIL_IF_MACRO(iso_find_dir_entry(handle,dname, &descriptor), ERRPASS,);
         BAIL_IF_MACRO(!descriptor.flags.directory, ERRPASS,);
 
