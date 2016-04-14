@@ -246,6 +246,8 @@ typedef struct __ISO9660FileHandle
 
 static PHYSFS_sint64 iso_mktime(ISO9660FileTimestamp *timestamp)
 {
+	return 0;
+#if 0
     struct tm tm;
     memset(&tm, 0, sizeof(tm));
     tm.tm_year = timestamp->year;
@@ -256,6 +258,7 @@ static PHYSFS_sint64 iso_mktime(ISO9660FileTimestamp *timestamp)
     tm.tm_sec = timestamp->second;
     /* Ignore GMT offset for now... */
     return mktime(&tm);
+#endif
 } /* iso_mktime */
 
 static int iso_atoi2(char *text)
@@ -271,6 +274,8 @@ static int iso_atoi4(char *text)
 
 static PHYSFS_sint64 iso_volume_mktime(ISO9660VolumeTimestamp *timestamp)
 {
+	return 0;
+#if 0
     struct tm tm;
     tm.tm_year = iso_atoi4(timestamp->year);
     tm.tm_mon = iso_atoi2(timestamp->month) - 1;
@@ -281,6 +286,7 @@ static PHYSFS_sint64 iso_volume_mktime(ISO9660VolumeTimestamp *timestamp)
     /* this allows values outside the range of a unix timestamp... sanitize them */
     PHYSFS_sint64 value = mktime(&tm);
     return value == -1 ? 0 : value;
+#endif
 } /* iso_volume_mktime */
 
 /*******************************************************************************
