@@ -1,0 +1,11 @@
+
+# ==============
+# Visual Studio
+# ==============
+*.suo
+*.user
+*.ncb
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
