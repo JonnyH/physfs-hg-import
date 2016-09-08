@@ -2427,7 +2427,8 @@ PHYSFS_DECL void PHYSFS_enumerateFilesCallback(const char *dir,
  */
 PHYSFS_DECL void PHYSFS_utf8FromUcs4(const PHYSFS_uint32 *src, char *dst,
                                      PHYSFS_uint64 len);
-
+PHYSFS_DECL void PHYSFS_utf8FromUcs4Lower(const PHYSFS_uint32 *src, char *dst,
+PHYSFS_uint64 len);
 /**
  * \fn void PHYSFS_utf8ToUcs4(const char *src, PHYSFS_uint32 *dst, PHYSFS_uint64 len)
  * \brief Convert a UTF-8 string to a UCS-4 string.
@@ -2449,7 +2450,8 @@ PHYSFS_DECL void PHYSFS_utf8FromUcs4(const PHYSFS_uint32 *src, char *dst,
  */
 PHYSFS_DECL void PHYSFS_utf8ToUcs4(const char *src, PHYSFS_uint32 *dst,
                                    PHYSFS_uint64 len);
-
+PHYSFS_DECL void PHYSFS_utf8ToUcs4Lower(const char *src, PHYSFS_uint32 *dst,
+PHYSFS_uint64 len);
 /**
  * \fn void PHYSFS_utf8FromUcs2(const PHYSFS_uint16 *src, char *dst, PHYSFS_uint64 len)
  * \brief Convert a UCS-2 string to a UTF-8 string.
@@ -2479,7 +2481,8 @@ PHYSFS_DECL void PHYSFS_utf8ToUcs4(const char *src, PHYSFS_uint32 *dst,
  */
 PHYSFS_DECL void PHYSFS_utf8FromUcs2(const PHYSFS_uint16 *src, char *dst,
                                      PHYSFS_uint64 len);
-
+PHYSFS_DECL void PHYSFS_utf8FromUcs2Lower(const PHYSFS_uint16 *src, char *dst,
+PHYSFS_uint64 len);
 /**
  * \fn PHYSFS_utf8ToUcs2(const char *src, PHYSFS_uint16 *dst, PHYSFS_uint64 len)
  * \brief Convert a UTF-8 string to a UCS-2 string.
@@ -2510,7 +2513,8 @@ PHYSFS_DECL void PHYSFS_utf8FromUcs2(const PHYSFS_uint16 *src, char *dst,
  */
 PHYSFS_DECL void PHYSFS_utf8ToUcs2(const char *src, PHYSFS_uint16 *dst,
                                    PHYSFS_uint64 len);
-
+PHYSFS_DECL void PHYSFS_utf8ToUcs2Lower(const char *src, PHYSFS_uint16 *dst,
+PHYSFS_uint64 len);
 /**
  * \fn void PHYSFS_utf8FromLatin1(const char *src, char *dst, PHYSFS_uint64 len)
  * \brief Convert a UTF-8 string to a Latin1 string.
@@ -2536,7 +2540,8 @@ PHYSFS_DECL void PHYSFS_utf8ToUcs2(const char *src, PHYSFS_uint16 *dst,
  */
 PHYSFS_DECL void PHYSFS_utf8FromLatin1(const char *src, char *dst,
                                        PHYSFS_uint64 len);
-
+PHYSFS_DECL void PHYSFS_utf8FromLatin1Lower(const char *src, char *dst,
+PHYSFS_uint64 len);
 /* Everything above this line is part of the PhysicsFS 2.0 API. */
 
 /**

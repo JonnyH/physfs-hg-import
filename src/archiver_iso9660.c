@@ -33,6 +33,8 @@
 #define static_assert(a,b)
 #endif
 
+#define PHYSFS_ISO_LOWERCASE
+
 #include <time.h>
 
 /* cache files smaller than this completely in memory */
@@ -299,7 +301,12 @@ static int iso_extractfilenameISO(ISO9660FileDescriptor *descriptor,
     *filename = '\0';
     if (descriptor->flags.directory)
     {
-        strncpy(filename, descriptor->filename, descriptor->filenamelen);
+#ifdef PHYSFS_ISO_LOWERCASE
+		for (int i = 0; i < descriptor->filenamelen; i++)
+			filename[i] = tolower(descriptor->filename[i]);
+#else
+		strncpy(filename, descriptor->filename, descriptor->filenamelen);
+#endif
         filename[descriptor->filenamelen] = '\0';
         *version = 0;
     } /* if */
@@ -313,7 +320,12 @@ static int iso_extractfilenameISO(ISO9660FileDescriptor *descriptor,
                 lastfound = pos;
         BAIL_IF_MACRO(lastfound < 1, PHYSFS_ERR_NOT_FOUND /* !!! FIXME: PHYSFS_ERR_BAD_FILENAME */, -1);
         BAIL_IF_MACRO(lastfound == (descriptor->filenamelen -1), PHYSFS_ERR_NOT_FOUND /* !!! PHYSFS_ERR_BAD_FILENAME */, -1);
-        strncpy(filename, descriptor->filename, lastfound);
+#ifdef PHYSFS_ISO_LOWERCASE
+		for (int i = 0; i < lastfound; i++)
+			filename[i] = tolower(descriptor->filename[i]);
+#else
+		strncpy(filename, descriptor->filename, lastfound);
+#endif
         if (filename[lastfound - 1] == '.')
             filename[lastfound - 1] = '\0'; /* consume trailing ., as done in all implementations */
         else
@@ -342,7 +354,11 @@ static int iso_extractfilenameUCS2(ISO9660FileDescriptor *descriptor,
     while(len--)
         tmp[len] = PHYSFS_swapUBE16(src[len]);
 
+#ifdef PHYSFS_ISO_LOWERCASE
+	PHYSFS_utf8FromUcs2Lower(tmp, filename, 255);
+#else
     PHYSFS_utf8FromUcs2(tmp, filename, 255);
+#endif
 
     return 0;
 } /* iso_extractfilenameUCS2 */

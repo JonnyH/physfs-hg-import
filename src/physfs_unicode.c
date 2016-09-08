@@ -1,5 +1,7 @@
 #define __PHYSICSFS_INTERNAL__
 #include "physfs_internal.h"
+#include <stdbool.h>
+#include <ctype.h>
 
 
 /*
@@ -32,6 +34,9 @@
  *  UTF-8 string. May not fly in Asian locales?
  */
 #define UNICODE_BOGUS_CHAR_CODEPOINT '?'
+
+static void locate_case_fold_mapping(const PHYSFS_uint32 from,
+									 PHYSFS_uint32 *to);
 
 static PHYSFS_uint32 utf8codepoint(const char **_str)
 {
@@ -260,7 +265,7 @@ void PHYSFS_utf8ToUtf16(const char *src, PHYSFS_uint16 *dst, PHYSFS_uint64 len)
     *dst = 0;
 } /* PHYSFS_utf8ToUtf16 */
 
-static void utf8fromcodepoint(PHYSFS_uint32 cp, char **_dst, PHYSFS_uint64 *_len)
+static void utf8fromcodepoint(PHYSFS_uint32 cp, char **_dst, PHYSFS_uint64 *_len, bool fold)
 {
     char *dst = *_dst;
     PHYSFS_uint64 len = *_len;
@@ -287,6 +292,14 @@ static void utf8fromcodepoint(PHYSFS_uint32 cp, char **_dst, PHYSFS_uint64 *_len
                 cp = UNICODE_BOGUS_CHAR_CODEPOINT;
         } /* switch */
     } /* else */
+
+	if (fold)
+	{
+		PHYSFS_uint32 folded[3];
+		locate_case_fold_mapping(cp, folded);
+		cp = folded[0];
+	}
+
 
     /* Do the encoding... */
     if (cp < 0x80)
@@ -345,7 +358,7 @@ static void utf8fromcodepoint(PHYSFS_uint32 cp, char **_dst, PHYSFS_uint64 *_len
     { \
         const PHYSFS_uint32 cp = (PHYSFS_uint32) ((typ) (*(src++))); \
         if (cp == 0) break; \
-        utf8fromcodepoint(cp, &dst, &len); \
+        utf8fromcodepoint(cp, &dst, &len, false); \
     } \
     *dst = '\0'; \
 
@@ -395,12 +408,74 @@ void PHYSFS_utf8FromUtf16(const PHYSFS_uint16 *src, char *dst, PHYSFS_uint64 len
             } /* else */
         } /* else if */
 
-        utf8fromcodepoint(cp, &dst, &len);
+        utf8fromcodepoint(cp, &dst, &len, false);
     } /* while */
 
     *dst = '\0';
 } /* PHYSFS_utf8FromUtf16 */
 
+#define UTF8FROMTYPE(typ, src, dst, len) \
+	if (len == 0) return; \
+	len--;  \
+	while (len) \
+	{ \
+		const PHYSFS_uint32 cp = (PHYSFS_uint32) ((typ) (*(src++))); \
+		if (cp == 0) break; \
+		utf8fromcodepoint(cp, &dst, &len, true); \
+	} \
+	*dst = '\0'; \
+
+void PHYSFS_utf8FromUcs4Lower(const PHYSFS_uint32 *src, char *dst, PHYSFS_uint64 len)
+{
+	UTF8FROMTYPE(PHYSFS_uint32, src, dst, len);
+} /* PHYSFS_utf8FromUcs4Lower */
+
+void PHYSFS_utf8FromUcs2Lower(const PHYSFS_uint16 *src, char *dst, PHYSFS_uint64 len)
+{
+	UTF8FROMTYPE(PHYSFS_uint64, src, dst, len);
+} /* PHYSFS_utf8FromUcs2Lower */
+
+/* latin1 maps to unicode codepoints directly, we just utf-8 encode it. */
+void PHYSFS_utf8FromLatin1Lower(const char *src, char *dst, PHYSFS_uint64 len)
+{
+	UTF8FROMTYPE(PHYSFS_uint8, src, dst, len);
+} /* PHYSFS_utf8FromLatin1Lower */
+
+#undef UTF8FROMTYPE
+
+
+void PHYSFS_utf8FromUtf16Lower(const PHYSFS_uint16 *src, char *dst, PHYSFS_uint64 len)
+{
+	if (len == 0)
+		return;
+
+	len--;
+	while (len)
+	{
+		PHYSFS_uint32 cp = (PHYSFS_uint32) *(src++);
+		if (cp == 0)
+			break;
+
+		/* Orphaned second half of surrogate pair? */
+		if ((cp >= 0xDC00) && (cp <= 0xDFFF))
+			cp = UNICODE_BOGUS_CHAR_CODEPOINT;
+		else if ((cp >= 0xD800) && (cp <= 0xDBFF))  /* start surrogate pair! */
+		{
+			const PHYSFS_uint32 pair = (PHYSFS_uint32) *src;
+			if ((pair < 0xDC00) || (pair > 0xDFFF))
+				cp = UNICODE_BOGUS_CHAR_CODEPOINT;
+			else
+			{
+				src++;  /* eat the other surrogate. */
+				cp = (((cp - 0xD800) << 10) | (pair - 0xDC00));
+			} /* else */
+		} /* else if */
+
+		utf8fromcodepoint(cp, &dst, &len, true);
+	} /* while */
+
+	*dst = '\0';
+} /* PHYSFS_utf8FromUtf16Lower */
 
 typedef struct CaseFoldMapping
 {
