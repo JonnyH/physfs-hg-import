@@ -30,7 +30,7 @@
 #include <malloc.h>
 #endif
 
-#if PHYSFS_PLATFORM_SOLARIS
+#ifndef PHYSFS_PLATFORM_WINDOWS
 #include <alloca.h>
 #endif
 

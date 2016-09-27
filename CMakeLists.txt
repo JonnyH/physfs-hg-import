@@ -2,7 +2,7 @@
 #
 # Please see the file LICENSE.txt in the source's root directory.
 
-cmake_minimum_required(VERSION 2.8.4)
+cmake_minimum_required(VERSION 3.1)
 
 project(PhysicsFS)
 set(PHYSFS_VERSION 2.1.0)
@@ -270,6 +270,7 @@ if(PHYSFS_BUILD_STATIC)
     set_target_properties(physfs-static PROPERTIES OUTPUT_NAME "physfs")
     set(PHYSFS_LIB_TARGET physfs-static)
     set(PHYSFS_INSTALL_TARGETS ${PHYSFS_INSTALL_TARGETS} ";physfs-static")
+    set_property(TARGET physfs-static PROPERTY C_STANDARD 99)
 endif()
 
 option(PHYSFS_BUILD_SHARED "Build shared library" TRUE)
@@ -280,6 +281,7 @@ if(PHYSFS_BUILD_SHARED)
     target_link_libraries(physfs ${OPTIONAL_LIBRARY_LIBS} ${OTHER_LDFLAGS})
     set(PHYSFS_LIB_TARGET physfs)
     set(PHYSFS_INSTALL_TARGETS ${PHYSFS_INSTALL_TARGETS} ";physfs")
+    set_property(TARGET physfs PROPERTY C_STANDARD 99)
 endif()
 
 if(NOT PHYSFS_BUILD_SHARED AND NOT PHYSFS_BUILD_STATIC)
