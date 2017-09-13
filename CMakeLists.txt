@@ -355,7 +355,7 @@ else()
     message(STATUS "Doxygen not found. You won't be able to build documentation.")
 endif()
 
-if(UNIX)
+if(UNIX AND NOT ANDROID)
     set(PHYSFS_TARBALL "${CMAKE_CURRENT_SOURCE_DIR}/../physfs-${PHYSFS_VERSION}.tar.bz2")
     add_custom_target(
         dist
