@@ -147,6 +147,16 @@ if(PHYSFS_ARCHIVE_ISO9660_LOWERCASE)
     add_definitions(-DPHYSFS_ISO9660_LOWERCASE=1)
 endif()
 
+# The cd.iso shipped by steam for XCom: Apoclypse has a number of entries that
+# physfs believes are invaid, failing to open the archive with
+# PHYSFS_ERR_CORRUPT.
+# As this is likely a common source for OpenApoc, add a hack that just skips
+# those entries
+option(PHYSFS_ARCHIVE_ISO9660_LOWERCASE "Set ISO9660 files to lowercase" FALSE)
+if(PHYSFS_ARCHIVE_ISO9660_OPENAPOC_WORKAROUND)
+    add_definitions(-DPHYSFS_ISO9660_OPENAPOC_WORKAROUND=1)
+endif()
+
 option(PHYSFS_ARCHIVE_VDF "Enable Gothic I/II VDF archive support" TRUE)
 if(NOT PHYSFS_ARCHIVE_VDF)
     add_definitions(-DPHYSFS_SUPPORTS_VDF=0)
@@ -296,6 +306,8 @@ message_bool_option("VDF support" PHYSFS_ARCHIVE_VDF)
 message_bool_option("ISO9660 support" PHYSFS_ARCHIVE_ISO9660)
 message_bool_option("ISO9660 lowercase filenames"
         PHYSFS_ARCHIVE_ISO9660_LOWERCASE)
+message_bool_option("ISO9660 openapoc steam cd.iso hack"
+		PHYSFS_ARCHIVE_ISO9660_OPENAPOC_WORKAROUND)
 message_bool_option("Build static library" PHYSFS_BUILD_STATIC)
 message_bool_option("Build shared library" PHYSFS_BUILD_SHARED)
 message_bool_option("Build stdio test program" PHYSFS_BUILD_TEST)

@@ -217,6 +217,12 @@ static int iso9660LoadEntries(PHYSFS_Io *io, const int joliet,
         extent += extattrlen;  /* skip extended attribute record. */
 
         /* infinite loop, corrupt file? */
+#if PHYSFS_ISO9660_OPENAPOC_WORKAROUND
+		/* The steam-shipped cd.iso of XCom: Apocalypse has a number of entries that hit this.
+		 * Just skip them for now */
+		if ((extent * 2048) == dirstart)
+			continue;
+#endif
         BAIL_IF((extent * 2048) == dirstart, PHYSFS_ERR_CORRUPT, 0);
 
         if (!iso9660AddEntry(io, joliet, isdir, base, fname, fnamelen,
