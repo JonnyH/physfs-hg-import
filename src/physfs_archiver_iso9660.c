@@ -32,6 +32,7 @@
 #if PHYSFS_SUPPORTS_ISO9660
 
 #include <time.h>
+#include <ctype.h>
 
 /* ISO9660 often stores values in both big and little endian formats: little
    first, followed by big. While technically there might be different values
@@ -95,7 +96,11 @@ static int iso9660AddEntry(PHYSFS_Io *io, const int joliet, const int isdir,
                encoding. (We can change this later if we find out these exist
                and are intended to be, say, latin-1 or UTF-8 encoding). */
             BAIL_IF(fname[i] > 127, PHYSFS_ERR_CORRUPT, 0);
+#if PHYSFS_ISO9660_LOWERCASE
+            fnamecpy[i] = tolower(fname[i]);
+#else
             fnamecpy[i] = fname[i];
+#endif
         } /* for */
         fnamecpy[fnamelen] = '\0';
 
