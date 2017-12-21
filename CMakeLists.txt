@@ -180,6 +180,7 @@ if(PHYSFS_BUILD_STATIC)
     endif()
 
     set(PHYSFS_LIB_TARGET physfs-static)
+	target_link_libraries(physfs-static ${OPTIONAL_LIBRARY_LIBS} ${OTHER_LDFLAGS})
     set(PHYSFS_INSTALL_TARGETS ${PHYSFS_INSTALL_TARGETS} ";physfs-static")
 endif()
 
