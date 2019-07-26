@@ -9,7 +9,7 @@
 #  compile, using preprocessor checks for platform-specific bits instead of
 #  testing in here.
 
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.9)
 
 project(PhysicsFS)
 set(PHYSFS_VERSION 3.0.2)
